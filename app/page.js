@@ -7,7 +7,6 @@ import {
   Copy,
   Share2,
   QrCode,
-  ShieldCheck,
   Phone,
   Mail,
   MessageCircle,
@@ -17,6 +16,7 @@ import {
   PAYMENT,
   CONTACT,
   LOGO_SRC,
+  HDFC_LOGO_SRC,
   QR_SRC,
   buildPaymentText,
 } from "./payment-config";
@@ -58,7 +58,8 @@ export default function Home() {
   };
 
   const shareQR = async () => {
-    // Try native share with the QR image file first
+    // Preferred: native share sheet with the QR image attached.
+    // On mobile the user picks WhatsApp and the QR image is sent directly.
     try {
       if (navigator.canShare) {
         const res = await fetch(QR_SRC);
@@ -70,29 +71,24 @@ export default function Home() {
           await navigator.share({
             files: [file],
             title: "Agamana Developers UPI QR",
-            text: "Scan to pay Agamana Developers via UPI.",
+            text: "Scan this QR to pay Agamana Developers via UPI.",
           });
           return;
         }
       }
-      if (navigator.share) {
-        await navigator.share({
-          title: "Agamana Developers UPI QR",
-          text: "Scan to pay Agamana Developers via UPI.",
-          url: typeof window !== "undefined" ? window.location.href : QR_SRC,
-        });
-        return;
-      }
-      throw new Error("share-unsupported");
+      throw new Error("file-share-unsupported");
     } catch (err) {
       if (err && err.name === "AbortError") return; // user cancelled
-      // Fallback: download the QR image
-      const a = document.createElement("a");
-      a.href = QR_SRC;
-      a.download = "agamana-upi-qr.jpeg";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      // Fallback (e.g. desktop): open WhatsApp with a link to this page,
+      // where the QR can be scanned. WhatsApp URLs can't carry image files.
+      const pageUrl =
+        typeof window !== "undefined" ? window.location.href : "";
+      const text = `Scan this QR to pay Agamana Developers via UPI:\n${pageUrl}`;
+      window.open(
+        `https://wa.me/?text=${encodeURIComponent(text)}`,
+        "_blank",
+        "noopener,noreferrer"
+      );
     }
   };
 
@@ -119,11 +115,7 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
         >
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-border bg-white px-3 py-1 text-xs font-medium text-brand-primary">
-            <ShieldCheck className="h-3.5 w-3.5 text-brand-secondary" aria-hidden="true" />
-            Official payment details
-          </span>
-          <h1 className="mt-4 font-heading text-3xl font-700 tracking-tight text-textPrimary md:text-[42px] md:leading-tight">
+          <h1 className="font-heading text-3xl font-700 tracking-tight text-textPrimary md:text-[42px] md:leading-tight">
             Payment Information
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-textSecondary md:text-base">
@@ -142,10 +134,14 @@ export default function Home() {
               <h2 className="font-heading text-xl font-600 text-textPrimary">
                 Bank Account Details
               </h2>
-              {/* HDFC Bank logo (text-safe fallback wordmark) */}
-              <span className="rounded-md bg-[#004C8F] px-2.5 py-1 font-heading text-xs font-700 tracking-wide text-white">
-                HDFC<span className="text-[#ED232A]"> BANK</span>
-              </span>
+              {/* HDFC Bank official logo */}
+              <Image
+                src={HDFC_LOGO_SRC}
+                alt="HDFC Bank"
+                width={1280}
+                height={222}
+                className="h-6 w-auto object-contain md:h-7"
+              />
             </div>
 
             <dl className="flex flex-col gap-3">
@@ -179,7 +175,7 @@ export default function Home() {
                 className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border border-brand-border bg-white px-4 py-3 text-sm font-semibold text-brand-primary transition-all duration-200 hover:border-brand-secondary hover:bg-brand-bg active:scale-[0.99]"
               >
                 <Share2 className="h-4 w-4" aria-hidden="true" />
-                Share Payment Details
+                Share on WhatsApp
               </button>
             </div>
           </Card>
@@ -226,7 +222,7 @@ export default function Home() {
                 className="inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-xl bg-brand-primary px-4 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#02382e] active:scale-[0.99]"
               >
                 <Share2 className="h-4 w-4" aria-hidden="true" />
-                Share QR
+                Share QR on WhatsApp
               </button>
             </div>
           </Card>
