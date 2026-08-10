@@ -3,15 +3,28 @@
 //  This is the single source of truth for the whole page.
 // ============================================================
 
-export const PAYMENT = {
-  bankName: "HDFC BANK",
-  accountName: "AGAMANA DEVELOPERS",
-  accountType: "Current",
-  accountNumber: "50200105735813",
-  ifsc: "HDFC0004876",
-  // UPI ID is NOT displayed, copied, or shared as text — QR only.
-  upiId: "agamana@hdfcbank",
-};
+// List of bank accounts shown in the left card, top to bottom.
+// Add or remove entries here and the page updates automatically.
+export const ACCOUNTS = [
+  {
+    label: "Account 1",
+    bankName: "HDFC BANK",
+    logo: "/hdfc-logo.png", // image in /public
+    accountName: "AGAMANA DEVELOPERS",
+    accountType: "Current",
+    accountNumber: "50200105735813",
+    ifsc: "HDFC0004876",
+  },
+  {
+    label: "Account 2",
+    bankName: "KARNATAKA BANK",
+    logo: "/karnataka-logo.png", // add this image to /public (falls back to text if missing)
+    accountName: "AGAMANA DEVELOPERS",
+    accountType: "Current",
+    accountNumber: "0712202600001601",
+    ifsc: "KARB0000712",
+  },
+];
 
 export const CONTACT = {
   whatsapp: "917090644644", // digits only, with country code
@@ -21,23 +34,24 @@ export const CONTACT = {
   email: "operations@agamana.com",
 };
 
-// Logo path: drop your file at /public/logo.png (or .svg) and update if needed.
+// Company logo (top-left of the page).
 export const LOGO_SRC = "/logo.png";
 
-// HDFC Bank logo shown inside the Bank Details card.
-export const HDFC_LOGO_SRC = "/hdfc-logo.png";
-
-// QR path: official UPI QR image.
+// QR path: official UPI QR image (right card — unchanged).
 export const QR_SRC = "/upi-qr.jpeg";
 
 // Plain-text block used for "Copy Payment Details" and "Share on WhatsApp".
-// UPI ID is deliberately excluded — UPI payment is via the QR code only.
+// Includes every account; UPI ID is deliberately excluded (QR only).
 export function buildPaymentText() {
+  const blocks = ACCOUNTS.map(
+    (a) =>
+      `${a.bankName}
+Account Name: ${a.accountName}
+Account Type: ${a.accountType}
+Account Number: ${a.accountNumber}
+IFSC Code: ${a.ifsc}`
+  );
   return `AGAMANA DEVELOPERS
 
-Bank: ${PAYMENT.bankName}
-Account Name: ${PAYMENT.accountName}
-Account Type: ${PAYMENT.accountType}
-Account Number: ${PAYMENT.accountNumber}
-IFSC Code: ${PAYMENT.ifsc}`;
+${blocks.join("\n\n")}`;
 }
