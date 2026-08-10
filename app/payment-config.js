@@ -41,17 +41,14 @@ export const LOGO_SRC = "/logo.png";
 export const QR_SRC = "/upi-qr.jpeg";
 
 // Plain-text block used for "Copy Payment Details" and "Share on WhatsApp".
-// Includes every account; UPI ID is deliberately excluded (QR only).
-export function buildPaymentText() {
-  const blocks = ACCOUNTS.map(
-    (a) =>
-      `${a.bankName}
+// Text for ONE account — used by Copy Payment Details and Share on WhatsApp.
+// UPI ID is deliberately excluded (QR only).
+export function buildPaymentText(a) {
+  return `AGAMANA DEVELOPERS
+
+${a.bankName}
 Account Name: ${a.accountName}
 Account Type: ${a.accountType}
 Account Number: ${a.accountNumber}
-IFSC Code: ${a.ifsc}`
-  );
-  return `AGAMANA DEVELOPERS
-
-${blocks.join("\n\n")}`;
+IFSC Code: ${a.ifsc}`;
 }

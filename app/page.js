@@ -27,6 +27,8 @@ import FloatingWhatsApp from "../components/FloatingWhatsApp";
 
 export default function Home() {
   const [toast, setToast] = useState({ show: false, message: "" });
+  const [selected, setSelected] = useState(0);
+  const activeAccount = ACCOUNTS[selected];
 
   const showToast = (message) => {
     setToast({ show: true, message });
@@ -34,7 +36,7 @@ export default function Home() {
   };
 
   const copyAll = async () => {
-    const text = buildPaymentText();
+    const text = buildPaymentText(activeAccount);
     try {
       await navigator.clipboard.writeText(text);
     } catch {
@@ -53,7 +55,9 @@ export default function Home() {
   };
 
   const shareWhatsApp = () => {
-    const url = `https://wa.me/?text=${encodeURIComponent(buildPaymentText())}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(
+      buildPaymentText(activeAccount)
+    )}`;
     window.open(url, "_blank", "noopener,noreferrer");
   };
 
@@ -130,41 +134,55 @@ export default function Home() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
           {/* LEFT — Bank Details */}
           <Card>
-            <h2 className="mb-5 font-heading text-xl font-600 text-textPrimary">
+            <h2 className="mb-1 font-heading text-xl font-600 text-textPrimary">
               Bank Account Details
             </h2>
+            <p className="mb-4 text-sm text-textSecondary">
+              Choose a bank to view its details
+            </p>
 
-            <div className="flex flex-col gap-6">
-              {ACCOUNTS.map((acc, i) => (
-                <div key={acc.accountNumber}>
-                  {i > 0 && (
-                    <div className="mb-6 border-t border-brand-border" />
-                  )}
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-brand-secondary">
-                      {acc.label}
-                    </span>
+            {/* Bank selector chips */}
+            <div className="mb-5 grid grid-cols-2 gap-3">
+              {ACCOUNTS.map((acc, i) => {
+                const isActive = i === selected;
+                return (
+                  <button
+                    key={acc.accountNumber}
+                    type="button"
+                    onClick={() => setSelected(i)}
+                    aria-pressed={isActive}
+                    aria-label={`Show ${acc.bankName} account`}
+                    className={`flex min-h-[56px] items-center justify-center rounded-xl bg-white px-3 py-3 transition-all duration-200 ${
+                      isActive
+                        ? "border-2 border-brand-primary"
+                        : "border border-brand-border hover:border-brand-secondary"
+                    }`}
+                  >
                     <BankLogo src={acc.logo} bankName={acc.bankName} />
-                  </div>
-
-                  <dl className="flex flex-col gap-3">
-                    <InfoRow label="Account Name" value={acc.accountName} />
-                    <div className="flex items-center justify-between gap-3 rounded-xl border border-brand-border bg-brand-bg/40 px-4 py-3">
-                      <div className="min-w-0">
-                        <dt className="text-xs font-medium uppercase tracking-wide text-textSecondary">
-                          Account Type
-                        </dt>
-                        <dd className="mt-0.5 font-heading text-base font-600 text-textPrimary md:text-[17px]">
-                          {acc.accountType}
-                        </dd>
-                      </div>
-                    </div>
-                    <InfoRow label="Account Number" value={acc.accountNumber} />
-                    <InfoRow label="IFSC Code" value={acc.ifsc} />
-                  </dl>
-                </div>
-              ))}
+                  </button>
+                );
+              })}
             </div>
+
+            {/* Selected account details */}
+            <dl className="flex flex-col gap-3">
+              <InfoRow label="Account Name" value={activeAccount.accountName} />
+              <div className="flex items-center justify-between gap-3 rounded-xl border border-brand-border bg-brand-bg/40 px-4 py-3">
+                <div className="min-w-0">
+                  <dt className="text-xs font-medium uppercase tracking-wide text-textSecondary">
+                    Account Type
+                  </dt>
+                  <dd className="mt-0.5 font-heading text-base font-600 text-textPrimary md:text-[17px]">
+                    {activeAccount.accountType}
+                  </dd>
+                </div>
+              </div>
+              <InfoRow
+                label="Account Number"
+                value={activeAccount.accountNumber}
+              />
+              <InfoRow label="IFSC Code" value={activeAccount.ifsc} />
+            </dl>
 
             <div className="mt-auto flex flex-col gap-3 pt-6 sm:flex-row">
               <button
