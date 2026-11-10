@@ -27,10 +27,10 @@ export const ACCOUNTS = [
 ];
 
 export const CONTACT = {
-  whatsapp: "917090644644", // digits only, with country code
-  whatsappDisplay: "+91 7090644644",
-  phone: "+917090644644",
-  phoneDisplay: "+91 7090644644",
+  whatsapp: "917090884850", // digits only, with country code
+  whatsappDisplay: "+91 7090 884 850",
+  phone: "+917090884850",
+  phoneDisplay: "+91 7090 884 850",
   email: "operations@agamana.com",
 };
 
