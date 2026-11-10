@@ -8,12 +8,12 @@
 export const ACCOUNTS = [
   {
     label: "Account 1",
-    bankName: "HDFC BANK",
-    logo: "/hdfc-logo.png", // image in /public
+    bankName: "ICICI BANK",
+    logo: "/icici-logo.png", // add this image to /public (falls back to text if missing)
     accountName: "AGAMANA DEVELOPERS",
     accountType: "Current",
-    accountNumber: "50200105735813",
-    ifsc: "HDFC0004876",
+    accountNumber: "384105004674",
+    ifsc: "ICIC0003841",
   },
   {
     label: "Account 2",

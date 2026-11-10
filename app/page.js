@@ -217,12 +217,12 @@ export default function Home() {
             </p>
 
             <div className="my-6 flex flex-1 items-center justify-center">
-              <div className="overflow-hidden rounded-2xl border border-brand-border shadow-card">
+              <div className="overflow-hidden rounded-2xl border border-brand-border bg-white p-4 shadow-card">
                 <Image
                   src={QR_SRC}
                   alt="UPI QR code for Agamana Developers"
-                  width={651}
-                  height={645}
+                  width={900}
+                  height={900}
                   className="h-auto w-full max-w-[320px] object-contain"
                 />
               </div>
